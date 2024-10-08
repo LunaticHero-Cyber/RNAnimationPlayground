@@ -43,13 +43,13 @@ const Home = ({navigation}: {navigation: OrderRequestDetailScreenProp}) => {
   const anim1Process = Animated.timing(fadeAnim1, {
     toValue: 50,
     duration: 1000,
-    useNativeDriver: true,
+    useNativeDriver: false,
   });
 
   const animHide1Process = Animated.timing(fadeAnim1, {
     toValue: 0,
     duration: 1000,
-    useNativeDriver: true,
+    useNativeDriver: false,
   });
 
   const handleShowAnim1 = () => {
