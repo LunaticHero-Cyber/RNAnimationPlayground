@@ -1,10 +1,9 @@
-import React, {useEffect, useRef} from 'react';
+import React, {useRef} from 'react';
 import {
   Animated,
   Button,
   StyleSheet,
   Text,
-  TouchableOpacity,
   View,
   ViewStyle,
 } from 'react-native';
@@ -13,15 +12,14 @@ import {StackNavigationProp} from '@react-navigation/stack';
 
 import {StackParamList} from '@navigators/Root';
 import {BoxSpace, Container, Header} from 'components/Common';
-import {COLORS, SIZES} from 'constants';
+import {SIZES} from 'constants';
 
 type OrderRequestDetailScreenProp = StackNavigationProp<StackParamList, 'Home'>;
 
-type HomeStyleInterface = {
-  mainContainer: ViewStyle;
-};
-
-const styles = StyleSheet.create<HomeStyleInterface>({
+const styles = StyleSheet.create({
+  buttonMargin: {
+    marginTop: 16,
+  },
   mainContainer: {
     padding: SIZES.medium,
   },
@@ -68,7 +66,12 @@ const Home = ({navigation}: {navigation: OrderRequestDetailScreenProp}) => {
           useNativeDriver: false,
         }),
         Animated.timing(fadeAnim2, {
-          toValue: {x: 100, y: 0},
+          toValue: {x: 100, y: -100},
+          duration: 500,
+          useNativeDriver: false,
+        }),
+        Animated.timing(fadeAnim2, {
+          toValue: {x: 0, y: -100},
           duration: 500,
           useNativeDriver: false,
         }),
@@ -94,16 +97,20 @@ const Home = ({navigation}: {navigation: OrderRequestDetailScreenProp}) => {
           style={{
             height: fadeAnim1,
           }}>
-          <Text>LOL Name / SKU</Text>
+          <Text>Surprises comes after</Text>
         </Animated.View>
         <BoxSpace.D />
-        <Button title="Show Height" onPress={showAnim2} />
+        <Button title="Move the button below" onPress={showAnim2} />
         <Animated.View
           style={{
+            ...styles.buttonMargin,
             top: fadeAnim2.x,
             left: fadeAnim2.y,
           }}>
-          <Button title="Stop Animation" onPress={handleAnim2Stop} />
+          <Button
+            title="Stop Animation This Animation"
+            onPress={handleAnim2Stop}
+          />
         </Animated.View>
       </View>
     </Container>
