@@ -1,18 +1,10 @@
 import React, {useRef} from 'react';
-import {
-  Animated,
-  Button,
-  StyleSheet,
-  Text,
-  View,
-  ViewStyle,
-} from 'react-native';
+import {Animated, Button, StyleSheet, Text, View} from 'react-native';
 
 import {StackNavigationProp} from '@react-navigation/stack';
 
 import {StackParamList} from '@navigators/Root';
 import {BoxSpace, Container, Header} from 'components/Common';
-import {SIZES} from 'constants';
 
 type OrderRequestDetailScreenProp = StackNavigationProp<StackParamList, 'Home'>;
 
@@ -21,7 +13,7 @@ const styles = StyleSheet.create({
     marginTop: 16,
   },
   mainContainer: {
-    padding: SIZES.medium,
+    padding: 16,
   },
 });
 
