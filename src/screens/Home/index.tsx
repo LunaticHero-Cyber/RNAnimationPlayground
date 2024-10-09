@@ -1,4 +1,4 @@
-import React, {useRef, useState} from 'react';
+import React, {useEffect, useRef, useState} from 'react';
 import {Animated, Button, StyleSheet, Text, View} from 'react-native';
 
 import {StackNavigationProp} from '@react-navigation/stack';
@@ -21,6 +21,8 @@ const styles = StyleSheet.create({
 });
 
 const Home = ({navigation}: {navigation: OrderRequestDetailScreenProp}) => {
+  const [buttonPosX, setButtonPosX] = useState(0);
+  const [buttonPosY, setButtonPosY] = useState(0);
   const [canContinue, setCanContinue] = useState(false);
   const [isStopButtonDisabled, setIsStopButtonDisabled] = useState(true);
 
@@ -84,11 +86,61 @@ const Home = ({navigation}: {navigation: OrderRequestDetailScreenProp}) => {
     }).start();
   };
 
+  const loop = Animated.loop(
+    Animated.sequence([
+      Animated.timing(fadeAnim2, {
+        toValue: {x: 0, y: 100},
+        duration: 500,
+        useNativeDriver: false,
+      }),
+      Animated.timing(fadeAnim2, {
+        toValue: {x: 100, y: 100},
+        duration: 500,
+        useNativeDriver: false,
+      }),
+      Animated.timing(fadeAnim2, {
+        toValue: {x: 100, y: -100},
+        duration: 500,
+        useNativeDriver: false,
+      }),
+      Animated.timing(fadeAnim2, {
+        toValue: {x: 0, y: -100},
+        duration: 500,
+        useNativeDriver: false,
+      }),
+      Animated.timing(fadeAnim2, {
+        toValue: {x: 0, y: 0},
+        duration: 500,
+        useNativeDriver: false,
+      }),
+    ]),
+    {
+      iterations: 4,
+    },
+  );
+
   const showAnim2 = () => {
     setCanContinue(true);
     setIsStopButtonDisabled(false);
     handleHideContinueButton();
-    Animated.loop(
+    loop.start();
+  };
+
+  const continueAnim2 = () => {
+    setCanContinue(true);
+    setIsStopButtonDisabled(false);
+    handleHideContinueButton();
+
+    if (buttonPosX === 0 && buttonPosY < 0) {
+      Animated.sequence([
+        Animated.timing(fadeAnim2, {
+          toValue: {x: 0, y: 0},
+          duration: 500,
+          useNativeDriver: false,
+        }),
+        loop,
+      ]).start();
+    } else if (buttonPosX === 0 && buttonPosY < 100) {
       Animated.sequence([
         Animated.timing(fadeAnim2, {
           toValue: {x: 0, y: 100},
@@ -115,13 +167,82 @@ const Home = ({navigation}: {navigation: OrderRequestDetailScreenProp}) => {
           duration: 500,
           useNativeDriver: false,
         }),
-      ]),
-      {
-        iterations: 4,
-      },
-    ).start();
+        loop,
+      ]).start();
+    } else if (buttonPosX < 100 && buttonPosY === 100) {
+      Animated.sequence([
+        Animated.timing(fadeAnim2, {
+          toValue: {x: 100, y: 100},
+          duration: 500,
+          useNativeDriver: false,
+        }),
+        Animated.timing(fadeAnim2, {
+          toValue: {x: 100, y: -100},
+          duration: 500,
+          useNativeDriver: false,
+        }),
+        Animated.timing(fadeAnim2, {
+          toValue: {x: 0, y: -100},
+          duration: 500,
+          useNativeDriver: false,
+        }),
+        Animated.timing(fadeAnim2, {
+          toValue: {x: 0, y: 0},
+          duration: 500,
+          useNativeDriver: false,
+        }),
+        loop,
+      ]).start();
+    } else if (buttonPosX === 100 && buttonPosY > -100) {
+      Animated.sequence([
+        Animated.timing(fadeAnim2, {
+          toValue: {x: 100, y: -100},
+          duration: 500,
+          useNativeDriver: false,
+        }),
+        Animated.timing(fadeAnim2, {
+          toValue: {x: 0, y: -100},
+          duration: 500,
+          useNativeDriver: false,
+        }),
+        Animated.timing(fadeAnim2, {
+          toValue: {x: 0, y: 0},
+          duration: 500,
+          useNativeDriver: false,
+        }),
+        loop,
+      ]).start();
+    } else if (buttonPosX > 0 && buttonPosY === -100) {
+      Animated.sequence([
+        Animated.timing(fadeAnim2, {
+          toValue: {x: 0, y: -100},
+          duration: 500,
+          useNativeDriver: false,
+        }),
+        Animated.timing(fadeAnim2, {
+          toValue: {x: 0, y: 0},
+          duration: 500,
+          useNativeDriver: false,
+        }),
+        loop,
+      ]).start();
+    }
   };
-  console.log(canContinue, isStopButtonDisabled);
+
+  useEffect(() => {
+    fadeAnim2.x.addListener(e => {
+      setButtonPosX(e.value);
+    });
+    fadeAnim2.y.addListener(e => {
+      setButtonPosY(e.value);
+    });
+
+    return () => {
+      fadeAnim2.x.removeAllListeners();
+      fadeAnim2.y.removeAllListeners();
+    };
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
 
   return (
     <Container>
@@ -146,7 +267,7 @@ const Home = ({navigation}: {navigation: OrderRequestDetailScreenProp}) => {
             ...styles.continueButton,
             marginTop: continueButtonAnim,
           }}>
-          <Button title="Continue?" onPress={showAnim2} />
+          <Button title="Continue?" onPress={continueAnim2} />
         </Animated.View>
         <Animated.View
           style={{
